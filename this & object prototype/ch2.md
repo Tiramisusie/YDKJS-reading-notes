@@ -110,3 +110,58 @@ setTimeout( obj.foo, 0 ); // "oops, global"
 
 ### Explicit Binding
 
+第三条规则是`call(..)`和`apply(..)`函数。
+
+### `new` Binding
+
+第四条规则是`new`绑定。
+
+当使用`new`关键词来调用一个具有「构造函数」作用的函数时，这个函数会返回一个全新的对象，并且把`this`绑定到这个新对象。
+
+```js
+function foo(a) {
+	this.a = a;
+}
+
+var bar = new foo( 2 );
+console.log( bar.a ); // 2
+```
+
+## Everything In Order
+
+在判断`this`的指向时，如果函数的「call-site」同时符合以上多个规则，需要按一定的优先级来应用这些规则：
+
+1. Is the function called with `new` (**new binding**)? If so, `this` is the newly constructed object.
+
+    `var bar = new foo()`
+
+2. Is the function called with `call` or `apply` (**explicit binding**), even hidden inside a `bind` *hard binding*? If so, `this` is the explicitly specified object.
+
+    `var bar = foo.call( obj2 )`
+
+3. Is the function called with a context (**implicit binding**), otherwise known as an owning or containing object? If so, `this` is *that* context object.
+
+    `var bar = obj1.foo()`
+
+4. Otherwise, default the `this` (**default binding**). If in `strict mode`, pick `undefined`, otherwise pick the `global` object.
+
+    `var bar = foo()`
+
+## Binding Exceptions
+
+### Ignored `this`
+
+如果把`null`、`undefined`作为`call(..)`、`apply(..)`、`bind(..)`的第一个参数，这些值会被忽略并最终应用 default binding。
+
+```js
+function foo() {
+	console.log( this.a );
+}
+
+var a = 2;
+
+foo.call( null ); // 2
+```
+
+
+
