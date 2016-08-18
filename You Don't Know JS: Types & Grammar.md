@@ -104,3 +104,51 @@ javascript中有值传递和引用传递。对于`a = b`，如果是值传递，
 - `object`包括`array`和`function`是*引用*传递
 
 在赋值和参数传递的时候要尤为注意是哪一种传递，对于值的改变是否是你所期待的。
+
+## Chapter 3: Natives
+
+当使用`a = new String('str')`的方式来创建字符串的时候，对`a`使用`typeof`操作符的时候会返回‘object’而不是'string'。以下的内建对象也会有类似的情况出现。
+
+- Number()
+- Boolean()
+- Array()
+- Object()
+- Function()
+- RegExp()
+- Date()
+- Error()
+- Symbol()
+
+原因是用这种‘构造函数’的方式来新建值的时候，会返回一个对象，这个对象包裹着具体的值。
+
+对于这种`typeof a === 'object'`的情况，可以借用`Object`的`toString(..)`方法来检测值的类型。
+
+```js
+Object.prototype.toString.call(a)  // '[object String]'
+```
+
+### Boxing Wrappers
+
+js中的原始值都是没有属性或者方法的，为了能有这样`a.length`的用法，js引擎会自动在值的外面包一层对象。
+
+### Natives as Constructors
+
+#### `Array(..)`
+
+不要在任何情况下尝试新建一个稀疏数组，因为它会有很多意想不到的行为。
+
+避免以下行为：
+
+- 显式修改数组的`.length`属性，并且新的长度比数组实际的长度要长；
+- 用`delete`操作符删除一个数组的值
+
+#### `RegExp(..)`
+
+如果不需要动态创建正则表达式对象，都不要用`new RegExp(..)`的形式。
+
+```js
+// 动态创建
+var name = "Kyle";
+var namePattern = new RegExp( "\\b(?:" + name + ")+\\b", "ig" );
+var matches = someText.match( namePattern );
+```
