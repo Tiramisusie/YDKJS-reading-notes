@@ -98,3 +98,29 @@ p.then(
 );
 ```
 
+
+
+## Benchmarking & Tuning
+
+在我们测试 js 代码性能的时候，存在很多错误的认知。
+
+### Benchmarking
+
+例如有下面的代码：
+
+```js
+var start = (new Date()).getTime(); // or `Date.now()`
+// do some operation
+var end = (new Date()).getTime();
+console.log( "Duration:", (end - start) );
+```
+
+这样的测试方式其实是不太正确的。
+
+- 某些浏览器（例如老版本IE）不支持个位数的毫秒精度。对应一个最小时间精度为 15ms 的浏览器，0ms 的执行时间有可能是小于 1ms ，也有可能是小于 15ms 。
+- 对于不同的测试环境，对 js 的优化程度可能不同。
+- 在获取 `start` 或者 `end` 时间戳的时候有可能会有延迟。
+
+### Repetition
+
+重复执行同一段代码很多次，然后取平均执行时间，这种方法也是不准确的。
