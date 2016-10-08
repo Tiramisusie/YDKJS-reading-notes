@@ -84,7 +84,7 @@ var a = "oops, global"; // `a` also property on global object
 bar(); // "oops, global"
 ```
 
-虽然`bar`表面上是`obj.foo`的一个引用，但事实上只是`foo`的另外一个一个引用罢了。
+虽然`bar`表面上是`obj.foo`的一个引用，但事实上只是`foo`的另外一个引用罢了。
 
 ```js
 function foo() {
